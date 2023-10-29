@@ -56,6 +56,7 @@
   </PageWrapper>
 </template>
 <script lang="ts">
+  import { type Recordable } from '@vben/types';
   import { computed, defineComponent, unref, ref } from 'vue';
   import { BasicForm, FormSchema, ApiSelect } from '/@/components/Form/index';
   import { CollapseContainer } from '/@/components/Container';
@@ -65,23 +66,25 @@
   import { optionsListApi } from '/@/api/demo/select';
   import { useDebounceFn } from '@vueuse/core';
   import { treeOptionsListApi } from '/@/api/demo/tree';
-  import { Select } from 'ant-design-vue';
+  import { Select, type SelectProps } from 'ant-design-vue';
   import { cloneDeep } from 'lodash-es';
+  import { areaRecord } from '/@/api/demo/cascader';
+  import { uploadApi } from '/@/api/sys/upload';
 
   const valueSelectA = ref<string[]>([]);
   const valueSelectB = ref<string[]>([]);
-  const options = ref<Recordable[]>([]);
+  const options = ref<Required<SelectProps>['options']>([]);
   for (let i = 1; i < 10; i++) options.value.push({ label: '选项' + i, value: `${i}` });
 
   const optionsA = computed(() => {
     return cloneDeep(unref(options)).map((op) => {
-      op.disabled = unref(valueSelectB).indexOf(op.value) !== -1;
+      op.disabled = unref(valueSelectB).indexOf(op.value as string) !== -1;
       return op;
     });
   });
   const optionsB = computed(() => {
     return cloneDeep(unref(options)).map((op) => {
-      op.disabled = unref(valueSelectA).indexOf(op.value) !== -1;
+      op.disabled = unref(valueSelectA).indexOf(op.value as string) !== -1;
       return op;
     });
   });
@@ -189,6 +192,18 @@
       suffix: '天',
     },
     {
+      field: 'fieldsc',
+      component: 'Upload',
+      label: '上传',
+      colProps: {
+        span: 8,
+      },
+      rules: [{ required: true, message: '请选择上传文件' }],
+      componentProps: {
+        api: uploadApi,
+      },
+    },
+    {
       field: 'field3',
       component: 'DatePicker',
       label: '字段3',
@@ -293,6 +308,9 @@
             value: '2',
           },
         ],
+        onChange: (e, v) => {
+          console.log('RadioButtonGroup====>:', e, v);
+        },
       },
     },
     {
@@ -358,15 +376,16 @@
         params: {
           id: 1,
         },
+
         resultField: 'list',
         // use name as label
         labelField: 'name',
         // use id as value
         valueField: 'id',
         // not request untill to select
-        immediate: false,
-        onChange: (e) => {
-          console.log('selected:', e);
+        immediate: true,
+        onChange: (e, v) => {
+          console.log('ApiSelect====>:', e, v);
         },
         // atfer request callback
         onOptionsChange: (options) => {
@@ -377,6 +396,31 @@
         span: 8,
       },
       defaultValue: '0',
+    },
+    {
+      field: 'field8',
+      component: 'ApiCascader',
+      label: '联动ApiCascader',
+      required: true,
+      colProps: {
+        span: 8,
+      },
+      componentProps: {
+        api: areaRecord,
+        apiParamKey: 'parentCode',
+        dataField: 'data',
+        labelField: 'name',
+        valueField: 'code',
+        initFetchParams: {
+          parentCode: '',
+        },
+        isLeaf: (record) => {
+          return !(record.levelType < 3);
+        },
+        onChange: (e, ...v) => {
+          console.log('ApiCascader====>:', e, v);
+        },
+      },
     },
     {
       field: 'field31',
@@ -411,6 +455,52 @@
       componentProps: {
         api: treeOptionsListApi,
         resultField: 'list',
+        onChange: (e, v) => {
+          console.log('ApiTreeSelect====>:', e, v);
+        },
+      },
+      colProps: {
+        span: 8,
+      },
+    },
+    {
+      field: 'field33',
+      component: 'ApiTreeSelect',
+      label: '远程懒加载下拉树',
+      helpMessage: ['ApiTreeSelect组件', '使用接口提供的数据生成选项'],
+      required: true,
+      componentProps: {
+        api: () => {
+          return new Promise((resolve) => {
+            resolve([
+              {
+                title: 'Parent Node',
+                value: '0-0',
+              },
+            ]);
+          });
+        },
+        async: true,
+        onChange: (e, v) => {
+          console.log('ApiTreeSelect====>:', e, v);
+        },
+        onLoadData: ({ treeData, resolve, treeNode }) => {
+          console.log('treeNode====>:', treeNode);
+          setTimeout(() => {
+            const children: Recordable[] = [
+              { title: `Child Node ${treeNode.eventKey}-0`, value: `${treeNode.eventKey}-0` },
+              { title: `Child Node ${treeNode.eventKey}-1`, value: `${treeNode.eventKey}-1` },
+            ];
+            children.forEach((item) => {
+              item.isLeaf = false;
+              item.children = [];
+            });
+            treeNode.dataRef.children = children;
+            treeData.value = [...treeData.value];
+            resolve();
+            return;
+          }, 300);
+        },
       },
       colProps: {
         span: 8,
@@ -455,32 +545,35 @@
         // use id as value
         valueField: 'id',
         isBtn: true,
+        onChange: (e, v) => {
+          console.log('ApiRadioGroup====>:', e, v);
+        },
       },
       colProps: {
         span: 8,
       },
     },
-    // {
-    //   field: 'field36',
-    //   component: 'ApiTree',
-    //   label: '远程Tree',
-    //   helpMessage: ['ApiTree组件', '使用接口提供的数据生成选项'],
-    //   required: true,
-    //   componentProps: {
-    //     api: treeOptionsListApi,
-    //     params: {
-    //       count: 2,
-    //     },
-    //     afterFetch: (v) => {
-    //       //do something
-    //       return v;
-    //     },
-    //     resultField: 'list',
-    //   },
-    //   colProps: {
-    //     span: 8,
-    //   },
-    // },
+    {
+      field: 'field36',
+      component: 'ApiTree',
+      label: '远程Tree',
+      helpMessage: ['ApiTree组件', '使用接口提供的数据生成选项'],
+      required: true,
+      componentProps: {
+        api: treeOptionsListApi,
+        params: {
+          count: 2,
+        },
+        afterFetch: (v) => {
+          //do something
+          return v;
+        },
+        resultField: 'list',
+      },
+      colProps: {
+        span: 8,
+      },
+    },
     {
       field: 'divider-linked',
       component: 'Divider',
@@ -575,10 +668,28 @@
     {
       field: '[startTime, endTime]',
       label: '时间范围',
+      component: 'TimeRangePicker',
+      componentProps: {
+        format: 'HH:mm:ss',
+        placeholder: ['开始时间', '结束时间'],
+      },
+    },
+    {
+      field: '[startDate, endDate]',
+      label: '日期范围',
+      component: 'RangePicker',
+      componentProps: {
+        format: 'YYYY-MM-DD',
+        placeholder: ['开始日期', '结束日期'],
+      },
+    },
+    {
+      field: '[startDateTime, endDateTime]',
+      label: '日期时间范围',
       component: 'RangePicker',
       componentProps: {
         format: 'YYYY-MM-DD HH:mm:ss',
-        placeholder: ['开始时间', '结束时间'],
+        placeholder: ['开始日期、时间', '结束日期、时间'],
         showTime: { format: 'HH:mm:ss' },
       },
     },
@@ -629,6 +740,17 @@
         allowHalf: true,
       },
     },
+    {
+      field: 'field23',
+      component: 'ImageUpload',
+      label: '字段23',
+      colProps: {
+        span: 8,
+      },
+      componentProps: {
+        api: () => Promise.resolve('https://via.placeholder.com/600/92c952'),
+      },
+    },
   ];
 
   export default defineComponent({
@@ -637,7 +759,7 @@
       const check = ref(null);
       const { createMessage } = useMessage();
       const keyword = ref<string>('');
-      const searchParams = computed<Recordable>(() => {
+      const searchParams = computed<Recordable<string>>(() => {
         return { keyword: unref(keyword) };
       });
 

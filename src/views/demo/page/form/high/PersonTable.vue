@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" @edit-change="handleEditChange">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
-          <TableAction :actions="createActions(record, column)" />
+          <TableAction :actions="createActions(record)" />
         </template>
       </template>
     </BasicTable>
@@ -69,6 +69,7 @@
           dataIndex: 'action',
           // slots: { customRender: 'action' },
         },
+        scroll: { y: '100%' },
         pagination: false,
       });
 
@@ -106,7 +107,7 @@
         data.push(addRow);
       }
 
-      function createActions(record: EditRecordRow, column: BasicColumn): ActionItem[] {
+      function createActions(record: EditRecordRow): ActionItem[] {
         if (!record.editable) {
           return [
             {
@@ -121,13 +122,13 @@
         return [
           {
             label: '保存',
-            onClick: handleSave.bind(null, record, column),
+            onClick: handleSave.bind(null, record),
           },
           {
             label: '取消',
             popConfirm: {
               title: '是否取消编辑',
-              confirm: handleCancel.bind(null, record, column),
+              confirm: handleCancel.bind(null, record),
             },
           },
         ];

@@ -9,7 +9,7 @@
 
 ## Introduction
 
-Vue Vben Admin is a free and open source middle and back-end template. Using the latest `vue3`, `vite2`, `TypeScript` and other mainstream technology development, the out-of-the-box middle and back-end front-end solutions can also be used for learning reference.
+Vue Vben Admin is a free and open source middle and back-end template. Using the latest `vue3`, `vite4`, `TypeScript` and other mainstream technology development, the out-of-the-box middle and back-end front-end solutions can also be used for learning reference.
 
 ## Feature
 
@@ -23,9 +23,9 @@ Vue Vben Admin is a free and open source middle and back-end template. Using the
 
 ## Preview
 
-- [vue-vben-admin](https://vvbin.cn/next/) - Full version Chinese site
+- [vue-vben-admin](https://vben.vvbin.cn/) - Full version Chinese site
 - [vue-vben-admin-gh-pages](https://anncwb.github.io/vue-vben-admin/) - Full version of the github site
-- [vben-admin-thin-next](https://vvbin.cn/thin/next/) - Simplified Chinese site
+- [vben-admin-thin-next](https://vben.vvbin.cn/thin/next/) - Simplified Chinese site
 - [vben-admin-thin-gh-pages](https://anncwb.github.io/vben-admin-thin-next/) -Simplified github site
 
 Test account: vben/123456
@@ -54,7 +54,7 @@ Open the project in Gitpod (free online dev environment for GitHub) and start co
 - [TypeScript](https://www.typescriptlang.org/) - Familiar with the basic syntax of `TypeScript`
 - [Es6+](http://es6.ruanyifeng.com/) - Familiar with es6 basic syntax
 - [Vue-Router-Next](https://next.router.vuejs.org/) - Familiar with the basic use of vue-router
-- [Ant-Design-Vue](https://2x.antdv.com/docs/vue/introduce-cn/) - ui basic use
+- [Ant-Design-Vue](https://antdv.com/docs/vue/introduce-cn/) - ui basic use
 - [Mock.js](https://github.com/nuysoft/Mock) - mockjs basic syntax
 
 ## Install and use
@@ -85,6 +85,24 @@ pnpm serve
 ```bash
 pnpm build
 ```
+
+- docker
+
+### The dockerFile is located in the project root directory and supports differential deployment
+
+#### build image
+
+```bash
+docker build -t vue-vben-admin .
+```
+
+#### Environment variables are dynamically used to achieve differentiated container deployment. Different VG_BASE_URL environment variables point to different back-end service addresses. In the following example, http://localhost:3333 is used as the back-end service address and the container is mapped to port 6666
+
+```bash
+docker run --name vue-vben-admin -d -p 6666:80  -e VG_BASE_URL=http://localhost:3333 vue-vben-admin
+```
+
+Then you can navigate http://localhost:6666
 
 ## Change Log
 
@@ -131,9 +149,6 @@ If these plugins are helpful to you, you can give a star support
 
 - [vite-plugin-mock](https://github.com/anncwb/vite-plugin-mock) - Used for local and development environment data mock
 - [vite-plugin-html](https://github.com/anncwb/vite-plugin-html) - Used for html template conversion and compression
-- [vite-plugin-style-import](https://github.com/anncwb/vite-plugin-style-import) - Used for component library style introduction on demand
-- [vite-plugin-theme](https://github.com/anncwb/vite-plugin-theme) - Used for online switching of theme colors and other color-related configurations
-- [vite-plugin-imagemin](https://github.com/anncwb/vite-plugin-imagemin) - Used to pack compressed image resources
 - [vite-plugin-compression](https://github.com/anncwb/vite-plugin-compression) - Used to pack input .gz|.brotil files
 - [vite-plugin-svg-icons](https://github.com/anncwb/vite-plugin-svg-icons) - Used to quickly generate svg sprite
 
@@ -150,19 +165,12 @@ Support modern browsers, not IE
 ## Maintainer
 
 [@Vben](https://github.com/anncwb)
+[@Jinmao](https://github.com/jinmao88)
 
-## Donate
+## Thanks
 
-If you think this project is helpful to you, you can help the author buy a cup of coffee to show your support!
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains Logo (Main) logo." height="120">
 
-![donate](https://anncwb.github.io/anncwb/images/sponsor.png)
-
-<a style="display: block;width: 100px;height: 50px;line-height: 50px; color: #fff;text-align: center; background: #408aed;border-radius: 4px;" href="https://www.paypal.com/paypalme/cvvben">Paypal Me</a>
-
-## Discord
-
-- [github discussions](https://github.com/anncwb/vue-vben-admin/discussions)
-- [Discord](https://discord.gg/8GuAdwDhj6)
 
 ## License
 

@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" @edit-change="onEditChange">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
-          <TableAction :actions="createActions(record, column)" />
+          <TableAction :actions="createActions(record)" />
         </template>
       </template>
     </BasicTable>
@@ -29,47 +29,54 @@
   const columns: BasicColumn[] = [
     {
       title: '输入框',
-      dataIndex: 'name',
+      dataIndex: 'name-group',
       editRow: true,
-      editComponentProps: {
-        prefix: '$',
-      },
-      width: 150,
-    },
-    {
-      title: '默认输入状态',
-      dataIndex: 'name7',
-      editRow: true,
-      width: 150,
-    },
-    {
-      title: '输入框校验',
-      dataIndex: 'name1',
-      editRow: true,
-      align: 'left',
-      // 默认必填校验
-      editRule: true,
-      width: 150,
-    },
-    {
-      title: '输入框函数校验',
-      dataIndex: 'name2',
-      editRow: true,
-      align: 'right',
-      editRule: async (text) => {
-        if (text === '2') {
-          return '不能输入该值';
-        }
-        return '';
-      },
-    },
-    {
-      title: '数字输入框',
-      dataIndex: 'id',
-      editRow: true,
-      editRule: true,
-      editComponent: 'InputNumber',
-      width: 150,
+      children: [
+        {
+          title: '输入框',
+          dataIndex: 'name',
+          editRow: true,
+          editComponentProps: {
+            prefix: '$',
+          },
+          width: 150,
+        },
+        {
+          title: '默认输入状态',
+          dataIndex: 'name7',
+          editRow: true,
+          width: 150,
+        },
+        {
+          title: '输入框校验',
+          dataIndex: 'name1',
+          editRow: true,
+          align: 'left',
+          // 默认必填校验
+          editRule: true,
+          width: 150,
+        },
+        {
+          title: '输入框函数校验',
+          dataIndex: 'name2',
+          editRow: true,
+          align: 'right',
+          editRule: async (text) => {
+            if (text === '2') {
+              return '不能输入该值';
+            }
+            return '';
+          },
+        },
+        {
+          title: '数字输入框',
+          dataIndex: 'id',
+          editRow: true,
+          editRule: true,
+          editComponent: 'InputNumber',
+          width: 150,
+        },
+      ],
     },
     {
       title: '下拉框',
@@ -271,7 +278,7 @@
         }
       }
 
-      function createActions(record: EditRecordRow, column: BasicColumn): ActionItem[] {
+      function createActions(record: EditRecordRow): ActionItem[] {
         if (!record.editable) {
           return [
             {
@@ -284,13 +291,13 @@
         return [
           {
             label: '保存',
-            onClick: handleSave.bind(null, record, column),
+            onClick: handleSave.bind(null, record),
           },
           {
             label: '取消',
             popConfirm: {
               title: '是否取消编辑',
-              confirm: handleCancel.bind(null, record, column),
+              confirm: handleCancel.bind(null, record),
             },
           },
         ];

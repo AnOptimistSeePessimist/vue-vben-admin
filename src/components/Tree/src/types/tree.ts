@@ -46,7 +46,7 @@ export const treeProps = buildProps({
   },
 
   renderIcon: {
-    type: Function as PropType<(params: Recordable) => string>,
+    type: Function as PropType<(...params: any[]) => string>,
   },
 
   helpMessage: {
@@ -91,7 +91,6 @@ export const treeProps = buildProps({
 
   expandedKeys: {
     type: Array as PropType<KeyType[]>,
-    default: () => [],
   },
 
   selectedKeys: {
@@ -100,12 +99,12 @@ export const treeProps = buildProps({
   },
 
   checkedKeys: {
-    type: Array as PropType<CheckKeys>,
+    type: [Array, Object] as PropType<CheckKeys>,
     default: () => [],
   },
 
   beforeRightClick: {
-    type: Function as PropType<(...arg: any) => ContextMenuItem[] | ContextMenuOptions>,
+    type: Function as PropType<(...arg: any) => Promise<ContextMenuItem[] | ContextMenuOptions>>,
     default: undefined,
   },
 
@@ -134,7 +133,7 @@ export const treeProps = buildProps({
     type: Boolean,
     default: false,
   },
-  treeWrapperClassName: String
+  treeWrapperClassName: String,
 });
 
 export type TreeProps = ExtractPropTypes<typeof treeProps>;

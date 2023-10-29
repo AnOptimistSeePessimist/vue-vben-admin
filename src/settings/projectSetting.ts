@@ -10,7 +10,8 @@ import {
   SessionTimeoutProcessingEnum,
 } from '/@/enums/appEnum';
 import { SIDE_BAR_BG_COLOR_LIST, HEADER_PRESET_BG_COLOR_LIST } from './designSetting';
-import { primaryColor } from '../../build/config/themeConfig';
+
+const primaryColor = '#0960bd';
 
 // ! You need to clear the browser cache after the change
 const setting: ProjectConfig = {
@@ -73,6 +74,7 @@ const setting: ProjectConfig = {
     showNotice: true,
     // Whether to display the menu search
     showSearch: true,
+    showApi: true,
   },
 
   // Menu configuration

@@ -4,7 +4,10 @@
       <BasicForm @register="register" @submit="handleSubmit">
         <template #add="{ field }">
           <Button v-if="Number(field) === 0" @click="add">+</Button>
-          <Button v-if="field > 0" @click="del(field)">-</Button>
+          <Button class="ml-2" v-if="Number(field) === 0" @click="batchAdd">
+            批量添加表单配置
+          </Button>
+          <Button v-if="Number(field) > 0" @click="() => del(field)">-</Button>
         </template>
       </BasicForm>
     </CollapseContainer>
@@ -27,32 +30,24 @@
             field: 'field0a',
             component: 'Input',
             label: '字段0',
-            colProps: {
-              span: 8,
-            },
             required: true,
           },
           {
             field: 'field0b',
             component: 'Input',
             label: '字段0',
-            colProps: {
-              span: 8,
-            },
             required: true,
           },
           {
             field: '0',
             component: 'Input',
             label: ' ',
-            colProps: {
-              span: 8,
-            },
             slot: 'add',
           },
         ],
         labelWidth: 100,
         actionColOptions: { span: 24 },
+        baseColProps: { span: 8 },
       });
 
       async function handleSubmit() {
@@ -72,9 +67,6 @@
             field: `field${n.value}a`,
             component: 'Input',
             label: '字段' + n.value,
-            colProps: {
-              span: 8,
-            },
             required: true,
           },
           '',
@@ -84,9 +76,6 @@
             field: `field${n.value}b`,
             component: 'Input',
             label: '字段' + n.value,
-            colProps: {
-              span: 8,
-            },
             required: true,
           },
           '',
@@ -97,22 +86,48 @@
             field: `${n.value}`,
             component: 'Input',
             label: ' ',
-            colProps: {
-              span: 8,
-            },
             slot: 'add',
           },
           '',
         );
         n.value++;
       }
+      /**
+       * @description: 批量添加
+       */
+      function batchAdd() {
+        appendSchemaByField(
+          [
+            {
+              field: `field${n.value}a`,
+              component: 'Input',
+              label: '字段' + n.value,
+              required: true,
+            },
+            {
+              field: `field${n.value}b`,
+              component: 'Input',
+              label: '字段' + n.value,
+              required: true,
+            },
+            {
+              field: `${n.value}`,
+              component: 'Input',
+              label: ' ',
+              slot: 'add',
+            },
+          ],
+          '',
+        );
+        n.value++;
+      }
 
-      function del(field) {
+      function del(field: string) {
         removeSchemaByField([`field${field}a`, `field${field}b`, `${field}`]);
         n.value--;
       }
 
-      return { register, handleSubmit, add, del };
+      return { register, handleSubmit, add, del, batchAdd };
     },
   });
 </script>
